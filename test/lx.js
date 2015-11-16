@@ -18,23 +18,27 @@ describe('lx.js', function(){
 			var tokens = []
 			var push = tokens.push.bind(tokens);
 
+			var value = Lexer()
+			var attr = Lexer()
 			var head = Lexer()
-			.match(/[\w\.\:\-]+/, token('attr.name'), push, state(attr))
+			var body = Lexer()
+
+			body
+			.match(/<([\w\.\:\-]+)/, shift, token('tag.head'), push, state(head))
+			.match(/<\/([\w\.\:\-]+)>/, shift, token('tag.tail'), push)
+
+			head
+			.match(/\s+([\w\.\:\-]+)/, shift, token('attr.name'), push, state(attr))
 			.match(/>/, shift, token('tag.head.end'), push, state(body))
 
-			var attr = Lexer()
+			attr
 			.match(/=/, token('attr.name.end'), push, state(value))
 			.match(/>/, token('tag.head.end'), push, state(body))
-			attr.name = 'attr'
 
-			var value = Lexer()
+			value
 			.match(/\"([^\"]+)\"/, shift, token('attr.value'), push, state(head))
 			.match(/\'([^\']+)\'/, shift, token('attr.value'), push, state(head))
 			.match(/[\w\.\:\-]+/, token('attr.value'), push, state(head))
-
-			var body = Lexer()
-			.match(/<([\w\.\:\-]+)/, shift, token('tag.head'), push, state(head))
-			.match(/<\/([\w\.\:\-]+)>/, shift, token('tag.tail'), push)
 
 			body(string);
 			return tokens;

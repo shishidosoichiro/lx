@@ -17,6 +17,7 @@
     return slice(arguments, 1);
   };
   var flow = function(functions){
+    if (arguments.length > 1 && !(functions instanceof Array)) functions = slice(arguments);
     functions = functions.map(functionalize);
     return function(){
       var that = this

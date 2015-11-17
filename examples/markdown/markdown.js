@@ -5,10 +5,34 @@ var token = Lexer.token;
 var push = Lexer.push;
 
 var analyze = (function(){
+  var block = Lexer()
+  var codeBlock = Lexer()
+  var inline = Lexer()
   var content = Lexer()
   var head = Lexer()
   var attr = Lexer()
   attr.value = Lexer()
+
+  block
+  .match(/^\#\s+([\S \t]+)(?:\n)/, shift, token('h1'), push)
+  .match(/^\#\#\s+([\S \t]+)(?:\n)/, shift, token('h2'), push)
+  .match(/^\#\#\#\s+([\S \t]+)(?:\n)/, shift, token('h3'), push)
+  .match(/^\#\#\#\#\s+([\S \t]+)(?:\n)/, shift, token('h4'), push)
+  .match(/^\#\#\#\#\#\s+([\S \t]+)(?:\n)/, shift, token('h5'), push)
+  .match(/^\#\#\#\#\#\#\s+([\S \t]+)(?:\n)/, shift, token('h6'), push)
+  .match(/^([\S \t]+)(?:\n)/, shift, token('block'), push)
+  .match(/^{2,}\=(?:\n)/, token('line.eq'), push)
+  .match(/^{2,}\-(?:\n)/, token('line.minus'), push)
+  .match(/^```(\w+)$/, shift, token('code.block.start'), push, state(codeBlock))
+  .match(/^(?:    |\t)(\S[\S \t]+)$/, shift, token('quote'), push, state(codeBlock))
+
+  codeBlock
+  .match(/^```$/, token('code.block.end'), push, state(block))
+  .other(token('code.block.content'), push)
+
+  codeBlock2
+  .match(/^```$/, token('code.block.end'), push, state(block))
+  .other(token('code.block.content'), push)
 
   content
   .match(/<([\w\.\:\-]+)/, shift, token('tag.head'), push, state(head))
@@ -94,4 +118,4 @@ var construct = function(tokens){
 module.exports = function(string){
   var tokens = analyze(string);
   return construct(tokens);
-};
+}

@@ -1,5 +1,6 @@
 var Lexer = require('../../lx');
 var state = Lexer.state;
+var back = Lexer.back;
 var shift = Lexer.shift;
 var token = Lexer.token;
 var push = Lexer.push;
@@ -17,18 +18,18 @@ var analyze = (function(){
 
   head
   .match(/\s+([\w\.\:\-]+)/, shift, token('attr.name'), push, state(attr))
-  .match(/\/>/, token('tag.head.short.end'), push, state(content))
-  .match(/>/, token('tag.head.end'), push, state(content))
+  .match(/\/>/, token('tag.head.shortend'), push, back)
+  .match(/>/, token('tag.head.end'), push, back)
 
   attr
   .match(/=/, token('attr.name.end'), push, state(attr.value))
-  .match(/\/>/, token('tag.head.short.end'), push, state(content))
-  .match(/>/, token('tag.head.end'), push, state(content))
+  .match(/\/>/, token('tag.head.shortend'), push, back, back)
+  .match(/>/, token('tag.head.end'), push, back, back)
 
   attr.value
-  .match(/\"([^\"]+)\"/, shift, token('attr.value'), push, state(head))
-  .match(/\'([^\']+)\'/, shift, token('attr.value'), push, state(head))
-  .match(/[\w\.\:\-]+/, token('attr.value'), push, state(head))
+  .match(/\"([^\"]+)\"/, shift, token('attr.value'), push, back, back)
+  .match(/\'([^\']+)\'/, shift, token('attr.value'), push, back, back)
+  .match(/[\w\.\:\-]+/, token('attr.value'), push, back, back)
 
   return function(string){
     var context = {tokens: []};

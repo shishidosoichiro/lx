@@ -82,6 +82,7 @@
       context = context || {};
       context.state = app;
       context.index = 0;
+      context.stack = [];
       while (string != ''){
         string = context.state.lex.call(context, string);
       }
@@ -162,9 +163,13 @@
   Lexer.shift = shift;
   Lexer.state = function(state){
     return function(){
+      this.stack.push(this.state);
       this.state = state;
     }
-  } 
+  }; 
+  Lexer.back = function(){
+    this.state = this.stack.pop();
+  };
   var toString = function(){
     return this.name + '(' + this.index + (typeof this.value === 'undefined' ? '' : ':' + this.value) + ')';
   }

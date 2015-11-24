@@ -1,5 +1,6 @@
 var Lexer = require('../../lx');
 var state = Lexer.state;
+<<<<<<< HEAD
 var back = Lexer.back;
 var shift = Lexer.shift;
 var token = Lexer.token;
@@ -61,6 +62,62 @@ var tokenize = (function(){
   .match(/\"([^\"]+)\"/, shift, token('attr.value'), push, back, back)
   .match(/\'([^\']+)\'/, shift, token('attr.value'), push, back, back)
   .match(/[\w\.\:\-]+/, token('attr.value'), push, back, back)
+=======
+var shift = Lexer.shift;
+var token = Lexer.token;
+var push = Lexer.push;
+
+var analyze = (function(){
+  var doctype = Lexer()
+  var declare = Lexer()
+  var parameter = Lexer()
+
+  doctype
+  .match(/<\!DOCTYPE\s+((?:\w|\.|\-|\_)+?)\s*\[/, shift(doctype), push, lex('ELEMENT and ATTLIST'))
+
+  declare
+  .match(/<\!(ELEMENT)\s+((?:\w|\.|\-|\_)+?)\s+((?:\w|\.|\-|\_)+?|EMPTY|ANY)\s*>/, shift(element), push, pop)
+  .match(/<\!(ELEMENT)\s+((?:\w|\.|\-|\_)+?)\s+/, shift(element), push, lex('In a Element'))
+  .match(/<\!(ATTLIST)\s+((?:\w|\.|\-|\_)+?)\s+/, shift(element), push, lex('In a Attribute List'))
+  .match(/\]>/, pop)
+  //  .match(/<\!ATTLIST\s+((?:\w|\.|\-|\_)+?)\s+((?:\w|\.|\-|\_)+?)\s+/, shift(attr), push, lex('Content Modal'))
+
+  lexer.lex('In a Element')
+  .match(/\(/, content, push, lex('Content Modal'))
+  .match(/>/, pop)
+
+  lexer.lex('Content Modal')
+  .match(/\(/, content, push, lex('Content Modal'))
+  .match(/\#PCDATA/, push, pop)
+  .match(/\#CDATA/, push, pop)
+  .match(/[^\|\,\&<>]+(?:\+|\*|\?)?\b/, push, pop)
+  .match(/\|/, type('or'))
+  .match(/\,/, type('seq'))
+  .match(/\&/, type('and'))
+  .match(/\)\+/, type('content+'), pop)
+  .match(/\)\*/, type('content*'), pop)
+  .match(/\)\?/, type('content?'), pop)
+  .match(/\)/, pop)
+
+  lexer.lex('In a Attribute List')
+  .match(/((?:\w|\.|\-|\_)+?)\s+((?:\w|\.|\-|\_)+?)\s+(\"[^\"]+?\"|\#REQUIRED|\#IMPLIED|\#FIXED \"[^\"]+?\")/, shift(attr), push, pop)
+  .match(/((?:\w|\.|\-|\_)+?)\b/, shift(attr), push, lex('In a Attribute'))
+  .match(/>/, pop)
+
+  lexer.lex('In a Attribute')
+  .match(/\(/, content, push, lex('Enumerated Attribute Values'))
+  .match(/(\"[^\"]+?\"|\#REQUIRED|\#IMPLIED|\#FIXED \"[^\"]+?\")/, shift(function(value){
+    this.current.node.value = value;
+  }), pop)
+
+  lexer.lex('Enumerated Attribute Values')
+  .match(/\(/, content, push, lex('Content Modal'))
+  .match(/\#PCDATA/, push, pop)
+  .match(/\#CDATA/, push, pop)
+  .match(/(?:\w|\.|\-|\_)+(?:\+|\*|\?)?\b/, push, pop)
+  .match(/\|/, type('or'))
+  .match(/\)/, pop)
+>>>>>>> FETCH_HEAD
 
   return function(string){
     var context = {tokens: []};
@@ -70,7 +127,11 @@ var tokenize = (function(){
 })();
 
 // convert tokens to vdom;
+<<<<<<< HEAD
 var build = function(tokens){
+=======
+var construct = function(tokens){
+>>>>>>> FETCH_HEAD
   var stack = [];
   var top = {attrs: {}, children: []};
   var current = top;
@@ -124,6 +185,11 @@ var build = function(tokens){
 };
 
 module.exports = function(string){
+<<<<<<< HEAD
   var tokens = tokenize(string);
   return build(tokens);
+=======
+  var tokens = analyze(string);
+  return construct(tokens);
+>>>>>>> FETCH_HEAD
 };

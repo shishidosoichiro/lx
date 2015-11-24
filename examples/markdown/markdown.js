@@ -13,26 +13,33 @@ var analyze = (function(){
   var attr = Lexer()
   attr.value = Lexer()
 
+  // Block Elements
   block
-  .match(/^\#\s+([\S \t]+)(?:\n)/, shift, token('h1'), push)
-  .match(/^\#\#\s+([\S \t]+)(?:\n)/, shift, token('h2'), push)
-  .match(/^\#\#\#\s+([\S \t]+)(?:\n)/, shift, token('h3'), push)
-  .match(/^\#\#\#\#\s+([\S \t]+)(?:\n)/, shift, token('h4'), push)
-  .match(/^\#\#\#\#\#\s+([\S \t]+)(?:\n)/, shift, token('h5'), push)
-  .match(/^\#\#\#\#\#\#\s+([\S \t]+)(?:\n)/, shift, token('h6'), push)
-  .match(/^([\S \t]+)(?:\n)/, shift, token('block'), push)
-  .match(/^{2,}\=(?:\n)/, token('line.eq'), push)
-  .match(/^{2,}\-(?:\n)/, token('line.minus'), push)
-  .match(/^```(\w+)$/, shift, token('code.block.start'), push, state(codeBlock))
-  .match(/^(?:    |\t)(\S[\S \t]+)$/, shift, token('quote'), push, state(codeBlock))
+  // Code Block HTML(h1, h2, h3, h4, h5, h6, p, pre, blockquote, ul, div)
+  .match(/^<(h1|h2|h3|h4|h5|h6|p|pre|blockquote|ul|div)\b/, shift, token('tag.head'), push, state(head))
+  // Lines for Horizontal rules or Headers
+  .match(/^{2,}\=$/, token('md.devider.eq'), push)
+  .match(/^{2,}\-$/, token('md.devider.minus'), push)
+  // Horizontal rules
+  .match(/^(?:[\*\- ]+){2,}$/, token('md.hr'), push)
+  // Headers
+  .match(/^\#{1,6}[ \t]+[\S \t]+$/, token('md.header'), push)
+  // Blockquotes
+  .match(/^> [\S \t]+$/, token('md.blockquote'), push)
+  // Lists
+  // Code blocks
+  .match(/^```(\w+)$/, shift, token('md.code.block.start'), push, state(codeBlock))
+  .match(/^(?: {4}|\t)(\S[\S \t]+)$/, shift, token('md.code.block.start'), push, state(codeBlock2))
+  // Paragraphs and line breaks
+  .match(/^[\S \t]+$/, shift, token('md.line'), push, state(p))
 
   codeBlock
-  .match(/^```$/, token('code.block.end'), push, state(block))
-  .other(token('code.block.content'), push)
+  .match(/^```$/, token('md.code.block.end'), push, state(block))
+  .other(token('md.code.block.content'), push)
 
   codeBlock2
-  .match(/^```$/, token('code.block.end'), push, state(block))
-  .other(token('code.block.content'), push)
+  .match(/^(?: {4}|\t)(\S[\S \t]+)$/, shift, token('md.code.block.content'), push)
+  .other(token('md.code.block.end'), push)
 
   content
   .match(/<([\w\.\:\-]+)/, shift, token('tag.head'), push, state(head))

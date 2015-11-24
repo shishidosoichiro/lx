@@ -178,9 +178,19 @@
       return {name: name, value: value, index: this.index, toString: toString};
     }
   };
-	Lexer.push = function(token){
-		this.tokens.push(token)
-	};
+  Lexer.push = function(token){
+    this.tokens.push(token)
+  };
+  Lexer.noop = function(arg){
+    return arg
+  };
+  Lexer.raise = function(message){
+    return function(arg){
+      var error = new Error(message)
+      error.arg = arg
+      throw error;
+    };
+  };
 
   return Lexer;
 })

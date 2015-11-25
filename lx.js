@@ -2,6 +2,12 @@
   if (typeof module === 'object' && typeof module.exports === 'object') {
     module.exports = factory();
   }
+  else if (typeof window != 'undefined') {
+    window.Lexer = factory();
+  }
+  else if (typeof define === 'function') {
+    define(factory);
+  }
 })(function(){
   var noop = function(arg){return arg};
   var slice = function(array, begin, end){

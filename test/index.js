@@ -1,16 +1,16 @@
 var chai = require('chai');
 var expect = chai.expect;
 
-var Lexer = require('../lx');
+var Lexer = require('..');
 var state = Lexer.state;
 var back = Lexer.back;
 var shift = Lexer.shift;
 var token = Lexer.token;
 var push = Lexer.push;
 
-describe('lx', function(){
+describe('index', function(){
 
-	describe('main', function(){
+	describe('Lexer', function(){
 		var xml
 		before(function(){
 			xml = (function(){

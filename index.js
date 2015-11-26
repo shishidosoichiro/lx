@@ -1,5 +1,5 @@
-var _ = require('./util');
-var Store = require('./store');
+var _ = require('./lib/util');
+var Store = require('./lib/store');
 
 var defaults = {
   flags: 'mg'
@@ -44,7 +44,7 @@ var Lexer = module.exports = function(options){
     return app;
   };
   app.lex = function(string){
-    var matched = regex.call(this).exec(string);
+    var matched = store.regex.call(this).exec(string);
     if (!matched) {
       other.call(this, string, this.index);
       return '';

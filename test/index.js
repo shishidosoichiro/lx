@@ -1,7 +1,7 @@
 var chai = require('chai');
 var expect = chai.expect;
 
-var Lexer = require('..');
+var Lexer = require('../index');
 var state = Lexer.state;
 var back = Lexer.back;
 var shift = Lexer.shift;

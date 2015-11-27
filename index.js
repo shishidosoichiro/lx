@@ -66,6 +66,7 @@ var Lexer = module.exports = function(options){
   }
   return app;
 };
+Lexer.noop = _.noop;
 Lexer.shift = _.shift;
 Lexer.state = function(state){
   return function(){
@@ -87,7 +88,6 @@ Lexer.token = function(name){
 Lexer.push = function(token){
   this.tokens.push(token)
 };
-Lexer.noop = _.noop;
 Lexer.raise = function(message){
   return function(arg){
     var error = new Error(message)
@@ -95,5 +95,3 @@ Lexer.raise = function(message){
     throw error;
   };
 };
-
-if (typeof window != 'undefined') window.Lexer = Lexer;

@@ -48,4 +48,38 @@ describe('lib/util', function(){
 		expect(output[1]).to.equal('c');
 		expect(output[2]).to.equal('d');
 	})
+
+	describe('#findIndex', function(){
+		it('function style', function(){
+			var input1 = [
+				{
+					id: 1,
+					name: 'a'
+				},
+				{
+					id: 2,
+					name: 'b'
+				}
+			];
+			var output1 = _.findIndex(input1, function(item){
+				return item.name === 'b';
+			});
+			expect(output1).to.equal(1);
+		})
+		it('name-value style', function(){
+			var input1 = [
+				{
+					id: 1,
+					name: 'a'
+				},
+				{
+					id: 2,
+					name: 'b'
+				}
+			];
+			var output1 = _.findIndex(input1, 'name', 'b');
+			expect(output1).to.equal(1);
+		})
+	})
+
 })

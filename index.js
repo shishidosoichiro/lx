@@ -20,8 +20,11 @@ var Lexer = module.exports = function(options){
 
   var store = Store(options);
 
+  var defined = function(arg){
+    return arg != undefined;
+  };
   var get = function(matched){
-    var position = _.findIndex(matched.slice(1)) + 1;
+    var position = _.findIndex(matched.slice(1), defined) + 1;
     return store.get(position);
   } 
 

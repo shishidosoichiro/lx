@@ -2,7 +2,7 @@
   "name": "lx",
   "version": "0.0.1",
   "description": "Simple lexical analyzer.",
-  "main": "lx.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },

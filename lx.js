@@ -97,6 +97,10 @@
 	    return app;
 	  };
 	  app.lex = function(string){
+	    if (store.last.position === 0) {
+	      other.call(this, string, this.index);
+	      return '';
+	    }
 	    var matched = store.regex.call(this).exec(string);
 	    if (!matched) {
 	      other.call(this, string, this.index);

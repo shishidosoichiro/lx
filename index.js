@@ -75,6 +75,7 @@ var Lexer = module.exports = function(options){
 };
 Lexer.noop = _.noop;
 Lexer.shift = _.shift;
+Lexer.flow = _.flow;
 Lexer.state = function(state){
   return function(){
     this.stack.push(this.state);

@@ -73,8 +73,11 @@
 
 	  var store = Store(options);
 
+	  var defined = function(arg){
+	    return arg != undefined;
+	  };
 	  var get = function(matched){
-	    var position = _.findIndex(matched.slice(1)) + 1;
+	    var position = _.findIndex(matched.slice(1), defined) + 1;
 	    return store.get(position);
 	  } 
 
@@ -125,6 +128,7 @@
 	};
 	Lexer.noop = _.noop;
 	Lexer.shift = _.shift;
+	Lexer.flow = _.flow;
 	Lexer.state = function(state){
 	  return function(){
 	    this.stack.push(this.state);
@@ -245,8 +249,13 @@
 	  var sources = [];
 	  var map = {};
 	  var wrap = function(src){
-	    return '(' + _.call.call(this, src) + ')';
+	    return '(' + src + ')';
 	  }
+	  var _regex;
+	  var regex = function(){
+	    var source = '(?:' + sources.map(wrap).join('|') + ')';
+	    return new RegExp(source, options.flags);
+	  };
 
 	  var store = {
 	    sources: sources,
@@ -258,10 +267,11 @@
 	      map[key] = rule;
 	      sources.push(rule.source)
 	      this.last = rule;
+	      _regex = regex();
 	    },
 	    regex: function(){
-	      var source = '(?:' + store.sources.map(wrap, this).join('|') + ')';
-	      return new RegExp(source, options.flags);
+	      _regex.lastIndex = 0;
+	      return _regex;
 	    }
 	  }
 	  return store;

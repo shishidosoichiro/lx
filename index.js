@@ -97,9 +97,13 @@ Lexer.push = function(token){
   this.tokens.push(token)
 };
 Lexer.raise = function(message){
-  return function(arg){
-    var error = new Error(message)
-    error.arg = arg
+  return function(string){
+    var args = {};
+    args.string = string;
+    args.index = this.index;
+    var error = new Error(message + ' ' + JSON.stringify(args));
+    error.string = args.string;
+    error.index = args.index;
     throw error;
   };
 };

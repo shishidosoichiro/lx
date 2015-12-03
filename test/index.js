@@ -129,7 +129,8 @@ describe('index', function(){
 		})
 		it('#raise', function(){
 			var error = function(){raise('a')('b')};
-			expect(error).to.throw('a');
+
+			expect(error).to.throw('a {"string":"b"}');
 		})
 	})
 })

@@ -2,6 +2,7 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var Lexer = require('../index');
+var Tokenizer = Lexer.Tokenizer;
 var state = Lexer.state;
 var back = Lexer.back;
 var shift = Lexer.shift;
@@ -40,11 +41,7 @@ describe('index', function(){
 					.match(/\'([^\']+)\'/, shift, token('attr.value'), push, back, back)
 					.match(/[\w\.\:\-]+/, token('attr.value'), push, back, back)
 
-					return function(string){
-						var context = {tokens: []};
-						content(string, context);
-						return context.tokens;
-					}
+					return Tokenizer(content);
 				})();
 			})
 

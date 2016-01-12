@@ -107,3 +107,17 @@ Lexer.raise = function(message){
     throw error;
   };
 };
+Lexer.Tokenizer = function(lexer){
+  return function(string){
+    var context = {tokens: []};
+    lexer(string, context);
+    return context.tokens;
+  };
+};
+Lexer.Converter = function(lexer){
+  var tokenizer = Lexer.Tokenizer(lexer);
+  return function(string){
+    var tokens = tokenizer(string);
+    return tokens.join('');
+  };
+};

@@ -1,0 +1,22 @@
+{
+  "name": "lx",
+  "description": "Simple lexical analyzer.",
+  "main": "lx.js",
+  "authors": [
+    "shishidosoichiro"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "lexer",
+    "lexical",
+    "analyzer"
+  ],
+  "homepage": "https://github.com/shishidosoichiro/lx",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

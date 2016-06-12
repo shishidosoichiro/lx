@@ -1,2 +1,4 @@
 #!/bin/sh
-docker run --rm -it -v `pwd`:/src --name node_dev_`dirname $0` node:dev $@
+PWD=`pwd`
+PROJECT_NAME=`basename $PWD`
+docker run --rm -it -v `pwd`:/src --name node_dev_$PROJECT_NAME node:dev $@

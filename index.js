@@ -5,7 +5,7 @@ var defaults = {
   flags: 'mg'
 };
 
-var Lexer = module.exports = function(options){
+var Lexer = module.exports = function Lexer(options){
   options = options || {};
   _.inherits(options, defaults);
   var app = function(string, context){
@@ -82,21 +82,21 @@ Lexer.state = function(state){
     this.state = state;
   }
 }; 
-Lexer.back = function(){
+Lexer.back = function back(){
   this.state = this.stack.pop();
 };
 var toString = function(){
   return this.name + '(' + this.index + (typeof this.value === 'undefined' ? '' : ':' + this.value) + ')';
 }
-Lexer.token = function(name){
+Lexer.token = function token(name){
   return function(value){
     return {name: name, value: value, index: this.index, toString: toString};
   }
 };
-Lexer.push = function(token){
+Lexer.push = function push(token){
   this.tokens.push(token)
 };
-Lexer.raise = function(message){
+Lexer.raise = function raise(message){
   return function(string){
     var args = {};
     args.string = string;
@@ -107,14 +107,14 @@ Lexer.raise = function(message){
     throw error;
   };
 };
-Lexer.Tokenizer = function(lexer){
+Lexer.Tokenizer = function Tokenizer(lexer){
   return function(string){
     var context = {tokens: []};
     lexer(string, context);
     return context.tokens;
   };
 };
-Lexer.Converter = function(lexer){
+Lexer.Converter = function Converter(lexer){
   var tokenizer = Lexer.Tokenizer(lexer);
   return function(string){
     var tokens = tokenizer(string);

@@ -26,7 +26,7 @@ var Lexer = module.exports = function Lexer(options){
   var get = function(matched){
     var position = _.findIndex(matched.slice(1), defined) + 1;
     return store.get(position);
-  } 
+  };
 
   app.match = function(regex){
     var position = store.last.position + store.last.count;
@@ -70,28 +70,28 @@ var Lexer = module.exports = function Lexer(options){
 
     this.index += matched[0].length;
     return string.substr(matched.index + matched[0].length);
-  }
+  };
   return app;
 };
 Lexer.noop = _.noop;
 Lexer.shift = _.shift;
 Lexer.flow = _.flow;
-Lexer.state = function(state){
+Lexer.state = function state(state){
   return function(){
     this.stack.push(this.state);
     this.state = state;
-  }
-}; 
+  };
+};
 Lexer.back = function back(){
   this.state = this.stack.pop();
 };
 var toString = function(){
   return this.name + '(' + this.index + (typeof this.value === 'undefined' ? '' : ':' + this.value) + ')';
-}
+};
 Lexer.token = function token(name){
   return function(value){
     return {name: name, value: value, index: this.index, toString: toString};
-  }
+  };
 };
 Lexer.push = function push(token){
   this.tokens.push(token)
